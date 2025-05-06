@@ -10,14 +10,21 @@
   <h2>Processing Payment...</h2>
   <script>
     var options = {
-      key: "rzp_test_ELECq2sp8Q0qiJ", // Replace with your Razorpay key
-      amount: "10000",    // INR 500
+      key: "rzp_test_ELECq2sp8Q0qiJ",
+      amount: "10000",
       currency: "INR",
       name: "Figma Plugin Pro",
       description: "Plugin Pro Access",
       handler: function (response) {
         alert("Payment successful! ID: " + response.razorpay_payment_id);
-        // Optionally redirect or trigger webhook/backend call
+
+        // Send payment info to the opener window (Figma plugin UI)
+        if (window.opener) {
+          window.opener.postMessage({
+            type: "payment-success",
+            paymentId: response.razorpay_payment_id
+          }, "*");
+        }
       },
       prefill: {
         name: "Figma User",
@@ -30,6 +37,7 @@
     var rzp = new Razorpay(options);
     rzp.open();
   </script>
+
 </body>
 
 </html>
